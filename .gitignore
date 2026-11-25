@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.DS_Store
+Thumbs.db
+size_n_side_presets.json
