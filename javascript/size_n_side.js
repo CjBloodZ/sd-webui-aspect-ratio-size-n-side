@@ -104,15 +104,15 @@
 
     function updateUndoButton(prefix) {
         const stack = window.snsHistory[prefix] || [];
+        const hasItems = stack.length > 0;
+        const nextTitle = hasItems
+            ? `Undo → ${stack[stack.length - 1][0]}×${stack[stack.length - 1][1]} (${stack.length} saved)`
+            : 'Undo previous resolution (empty)';
         document.querySelectorAll(`.sns-undo-btn-${prefix}`).forEach(btn => {
-            if (stack.length > 0) {
-                const prev = stack[stack.length - 1];
-                btn.classList.remove('sns-undo-empty');
-                btn.title = `Undo → ${prev[0]}×${prev[1]} (${stack.length} saved)`;
-            } else {
-                btn.classList.add('sns-undo-empty');
-                btn.title = 'Undo previous resolution (empty)';
-            }
+            const isEmpty = btn.classList.contains('sns-undo-empty');
+            if (hasItems && isEmpty) btn.classList.remove('sns-undo-empty');
+            else if (!hasItems && !isEmpty) btn.classList.add('sns-undo-empty');
+            if (btn.title !== nextTitle) btn.title = nextTitle;
         });
     }
 
@@ -337,12 +337,22 @@
             else if (is_ph) label = 'Landscape (3:2 / 4:3)';
             else if (is_wh) label = 'Wide Landscape';
 
-            document.querySelectorAll(`.sns-orient-txt[data-prefix="${prefix}"]`).forEach(el => el.textContent = label);
-            document.querySelectorAll(`.sns-dims-txt[data-prefix="${prefix}"]`).forEach(el => el.textContent = `${w}×${h}`);
+            const dimsStr = `${w}×${h}`;
+            const mpStr = `${mp} MP`;
+
+            document.querySelectorAll(`.sns-orient-txt[data-prefix="${prefix}"]`).forEach(el => {
+                if (el.textContent !== label) el.textContent = label;
+            });
+            document.querySelectorAll(`.sns-dims-txt[data-prefix="${prefix}"]`).forEach(el => {
+                if (el.textContent !== dimsStr) el.textContent = dimsStr;
+            });
             document.querySelectorAll(`.sns-mp-txt[data-prefix="${prefix}"]`).forEach(el => {
-                el.textContent = `${mp} MP`;
-                el.style.color = mpColor;
-                el.title = mpTip;
+                if (el.textContent !== mpStr) el.textContent = mpStr;
+                if (el.dataset.snsColor !== mpColor) {
+                    el.dataset.snsColor = mpColor;
+                    el.style.color = mpColor;
+                }
+                if (el.title !== mpTip) el.title = mpTip;
             });
 
             // Highlight active Ratio button in this tab's accordion
@@ -352,7 +362,9 @@
                     const txt = btn.textContent.trim();
                     const btnR = RATIO_MAP[txt];
                     const active = btnR ? (Math.abs(ratio - btnR) / btnR < 0.045) : false;
-                    btn.classList.toggle('sns-ratio-active', active);
+                    if (btn.classList.contains('sns-ratio-active') !== active) {
+                        btn.classList.toggle('sns-ratio-active', active);
+                    }
                 });
             }
 
@@ -370,12 +382,21 @@
 
             const act = "border: 2px solid #ff9900; background: rgba(255, 153, 0, 0.28); box-shadow: 0 0 10px rgba(255, 153, 0, 0.55); transform: scale(1.08);";
             const inact = "border: 1.5px solid #555; background: rgba(255, 255, 255, 0.04); opacity: 0.35; transform: scale(1.0);";
+            const setBoxStyle = (selector, isActive, extra) => {
+                const state = isActive ? '1' : '0';
+                document.querySelectorAll(selector).forEach(b => {
+                    if (b.dataset.snsBoxState !== state) {
+                        b.dataset.snsBoxState = state;
+                        b.style.cssText = (isActive ? act : inact) + extra;
+                    }
+                });
+            };
 
-            document.querySelectorAll(`.sns-box-wv[data-prefix="${prefix}"]`).forEach(b => b.style.cssText = (is_wv ? act : inact) + ' width: 14px; height: 34px; border-radius: 3px; transition: all 0.2s;');
-            document.querySelectorAll(`.sns-box-pv[data-prefix="${prefix}"]`).forEach(b => b.style.cssText = (is_pv ? act : inact) + ' width: 22px; height: 30px; border-radius: 3px; transition: all 0.2s;');
-            document.querySelectorAll(`.sns-box-sq[data-prefix="${prefix}"]`).forEach(b => b.style.cssText = (is_sq ? act : inact) + ' width: 28px; height: 28px; border-radius: 4px; transition: all 0.2s;');
-            document.querySelectorAll(`.sns-box-ph[data-prefix="${prefix}"]`).forEach(b => b.style.cssText = (is_ph ? act : inact) + ' width: 30px; height: 22px; border-radius: 3px; transition: all 0.2s;');
-            document.querySelectorAll(`.sns-box-wh[data-prefix="${prefix}"]`).forEach(b => b.style.cssText = (is_wh ? act : inact) + ' width: 38px; height: 16px; border-radius: 3px; transition: all 0.2s;');
+            setBoxStyle(`.sns-box-wv[data-prefix="${prefix}"]`, is_wv, ' width: 14px; height: 34px; border-radius: 3px; transition: all 0.2s;');
+            setBoxStyle(`.sns-box-pv[data-prefix="${prefix}"]`, is_pv, ' width: 22px; height: 30px; border-radius: 3px; transition: all 0.2s;');
+            setBoxStyle(`.sns-box-sq[data-prefix="${prefix}"]`, is_sq, ' width: 28px; height: 28px; border-radius: 4px; transition: all 0.2s;');
+            setBoxStyle(`.sns-box-ph[data-prefix="${prefix}"]`, is_ph, ' width: 30px; height: 22px; border-radius: 3px; transition: all 0.2s;');
+            setBoxStyle(`.sns-box-wh[data-prefix="${prefix}"]`, is_wh, ' width: 38px; height: 16px; border-radius: 3px; transition: all 0.2s;');
         });
     };
 
