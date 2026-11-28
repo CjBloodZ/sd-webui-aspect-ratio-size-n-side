@@ -53,3 +53,6 @@
 1. Откройте вкладку **Extensions → Install from URL** в Stable Diffusion WebUI / Forge Neo.
 2. Вставьте ссылку на этот репозиторий и нажмите **Install**.
 3. Перейдите в **Installed** и нажмите **Apply and restart UI**.
+
+---
+**Author:** Cj

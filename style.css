@@ -371,3 +371,31 @@
     font-size: 11px !important;
     padding: 1px 3px !important;
 }
+
+.sns-author-wrap,
+.sns-author-wrap > div,
+.sns-author-wrap .prose {
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.sns-author-wrap {
+    margin-top: -2px !important;
+}
+
+.sns-author-tag {
+    text-align: right !important;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.3px !important;
+    color: var(--body-text-color, #cbd5e1) !important;
+    opacity: 0.18 !important;
+    line-height: 1.1 !important;
+    padding: 0 2px !important;
+    user-select: none !important;
+    pointer-events: none !important;
+}

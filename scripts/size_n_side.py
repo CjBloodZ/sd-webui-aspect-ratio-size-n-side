@@ -436,6 +436,34 @@ CSS_STYLES = """
     color: #38bdf8 !important;
     user-select: none !important;
 }
+
+.sns-author-wrap,
+.sns-author-wrap > div,
+.sns-author-wrap .prose {
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.sns-author-wrap {
+    margin-top: -2px !important;
+}
+
+.sns-author-tag {
+    text-align: right !important;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.3px !important;
+    color: var(--body-text-color, #cbd5e1) !important;
+    opacity: 0.18 !important;
+    line-height: 1.1 !important;
+    padding: 0 2px !important;
+    user-select: none !important;
+    pointer-events: none !important;
+}
 </style>
 """
 
@@ -544,5 +572,7 @@ class AspectRatioManagerScript(scripts.Script):
                 for idx in range(6, 11):
                     btn_slot = gr.Button(f"Preset {idx}", size="sm", elem_classes=[f"sns-slot-btn-{idx}", "sns-btn", "sns-slot-btn"])
                     btn_slot.click(fn=None, _js=f"(e) => window.snsHandleSlot({idx}, e, '{prefix}')")
+
+            gr.HTML('<div class="sns-author-tag">by Cj</div>', elem_classes=["sns-author-wrap"])
 
         return []
